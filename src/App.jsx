@@ -17,8 +17,8 @@ const App = () => {
 
   useEffect(() => {
     if (tc) {
-      const { id, email, userName, role, image } = jwtDecode(tc);
-      dispatch(setUserInfo({ id, email, userName, role, image }));
+      const { id, email, userName, role, image, createdAt } = jwtDecode(tc);
+      dispatch(setUserInfo({ id, email, userName, role, image, createdAt }));
     }
   }, [cn]);
 
@@ -28,7 +28,16 @@ const App = () => {
         <Route path="/*" element={<UserLayout />} />
         <Route
           path="/admin/*"
-          element={role == "ADMIN" ? <AdminLayout /> : <Unauthorized />}
+          element={
+            role == import.meta.env.VITE_ADMIN ? (
+              <AdminLayout />
+            ) : (
+              <Unauthorized
+                role="USER"
+                message="You Are Not Allowed To View This Page, Only Admins Can View !"
+              />
+            )
+          }
         />
       </Routes>
       {/* <Footer /> */}

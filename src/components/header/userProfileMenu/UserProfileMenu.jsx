@@ -9,13 +9,20 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../../redux/slices/auth/login";
 import { initUserInfo } from "../../../../redux/slices/auth/userInfo";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const UserProfileMenu = () => {
   const { id, email, userName, profile_image, role } = useSelector(
     (state) => state.userProfile
   );
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    dispatch(logout());
+    dispatch(initUserInfo());
+    navigate("/");
+  };
 
   return (
     <div className="w-[10%]">
@@ -23,7 +30,7 @@ const UserProfileMenu = () => {
         <MenuHandler>
           <Avatar
             alt="tania andrew"
-            className="cursor-pointer md:w-[60%] md:h-[60%] object-cover"
+            className="cursor-pointer md:w-[60%] md:h-[60%]  object-cover"
             src={`${
               profile_image
                 ? profile_image
@@ -33,12 +40,17 @@ const UserProfileMenu = () => {
         </MenuHandler>
         <MenuList className="bg-mainBg dark:bg-darkMainBg dark:text-darkMainText">
           <MenuItem className="flex flex-col items-center gap-2 hover:bg-gray-200">
-            <Typography variant="small" className="font-bold">
+            <Typography
+              as={Link}
+              to="/user-profile"
+              variant="small"
+              className="font-bold"
+            >
               Welcome {userName.toUpperCase() || "Guest"}
             </Typography>
           </MenuItem>
 
-          {role == "ADMIN" && (
+          {role == import.meta.env.VITE_ADMIN && (
             <MenuItem className="flex flex-col items-center gap-2 hover:bg-gray-200">
               <Typography
                 as={Link}
@@ -73,10 +85,7 @@ const UserProfileMenu = () => {
             <Typography
               variant="small"
               className="font-medium "
-              onClick={() => {
-                dispatch(logout());
-                dispatch(initUserInfo());
-              }}
+              onClick={handleLogOut}
             >
               Sign Out
             </Typography>

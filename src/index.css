@@ -3,10 +3,6 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-* {
-  transition: 0.2s;
-}
-
 @theme {
   --font-display: "Urbanist", "serif";
   --color-mainBg: #f5efff;

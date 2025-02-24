@@ -17,7 +17,6 @@ export const createNewUser = async (prevState, data) => {
   formData.append("email", email);
   formData.append("password", password);
   formData.append("file", image);
-  formData.append("role", "USER");
 
   try {
     const req = await fetch(`${URL}/register`, {
@@ -50,6 +49,7 @@ export const signInLogin = async (prevState, data) => {
         "Content-Type": "application/json",
       },
       method: "POST",
+      credentials: "include",
       cache: "no-cache",
       body: JSON.stringify({ email, password }),
     });
@@ -77,6 +77,7 @@ export const requestOtp = async (prevState, data) => {
       },
       method: "POST",
       credentials: "include",
+      cache: "no-cache",
       body: JSON.stringify({ email }),
     });
 
@@ -109,6 +110,8 @@ export const changePassword = async (prevState, data) => {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
+      credentials: "include",
+      cache: "no-cache",
       body: JSON.stringify({ email, otp, password }),
     });
     const res = await req.json();

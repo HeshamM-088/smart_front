@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const NotFound = () => {
+const NotFound = ({ route }) => {
   return (
     <div className="min-h-[calc(100vh-80px)]  bg-blue-gray-400 flex flex-col items-center justify-center text-center px-4">
       <div className="space-y-8">
@@ -38,7 +38,7 @@ const NotFound = () => {
           universe.
         </p>
         <Link
-          to="/"
+          to={route}
           className="inline-block bg-orange-500 hover:bg-orange-800 text-white font-bold py-3 px-6 rounded-full transition duration-500 ease-in-out transform hover:scale-105"
         >
           Return to Earth

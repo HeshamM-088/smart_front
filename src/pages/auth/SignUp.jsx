@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { MdAttachEmail, MdPhotoCamera } from "react-icons/md";
-
 import { BiHide, BiShow, BiUser } from "react-icons/bi";
 import { Link, useNavigate } from "react-router-dom";
 import { useActionState } from "react";
@@ -138,33 +137,31 @@ const SignUp = () => {
               </div>
             </div>
             {/* Profile Image */}
-            <div>
-              <div className="relative">
-                <label
-                  htmlFor="pp"
-                  className="absolute  inset-y-0 left-0 pl-3 flex gap-x-3 items-center z-50 cursor-pointer "
-                >
-                  <MdPhotoCamera className="h-5 w-5 text-black dark:text-white hover:text-darkMainText" />
-                  {showPp ? (
-                    <p className="text-gray-600 font-[500] dark:text-white">
-                      {showPp}
-                    </p>
-                  ) : (
-                    <p className="text-gray-600 font-[500] dark:text-white">
-                      Upload Your Photo
-                    </p>
-                  )}
-                </label>
+            <div className="relative">
+              <label
+                htmlFor="pp"
+                className="absolute  inset-y-0 left-0 pl-3 flex gap-x-3 items-center z-50 cursor-pointer "
+              >
+                <MdPhotoCamera className="h-5 w-5 text-black dark:text-white hover:text-darkMainText" />
+                {showPp ? (
+                  <p className="text-gray-600 font-[500] dark:text-white">
+                    {showPp}
+                  </p>
+                ) : (
+                  <p className="text-gray-600 font-[500] dark:text-white">
+                    Upload Your Photo
+                  </p>
+                )}
+              </label>
 
-                <input
-                  id="pp"
-                  onChange={(e) => setShowPp(e.target.files[0].name)}
-                  name="profile_picture"
-                  type="file"
-                  className="rounded-[6px] relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500   focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 text-transparent"
-                  placeholder="Profile Picture"
-                />
-              </div>
+              <input
+                id="pp"
+                onChange={(e) => setShowPp(e.target.files[0].name)}
+                name="profile_picture"
+                type="file"
+                className="rounded-[6px] relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500   focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 text-transparent"
+                placeholder="Profile Picture"
+              />
             </div>
           </div>
 
