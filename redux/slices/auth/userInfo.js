@@ -24,7 +24,7 @@ const userInfo = createSlice({
       state.userName = userName;
       state.profile_image = profile_image;
       state.role = role;
-      state.createdAt = createdAt.slice(0, 4);
+      state.createdAt = createdAt?.slice(0, 4);
     },
     initUserInfo: (state) => {
       state.email = "";
