@@ -72,7 +72,6 @@ export const requestOtp = async (prevState, data) => {
   try {
     const req = await fetch(`${URL}/request-otp`, {
       headers: {
-        Accept: "application/json",
         "Content-Type": "application/json",
       },
       method: "POST",
@@ -111,7 +110,6 @@ export const changePassword = async (prevState, data) => {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      cache: "no-cache",
       body: JSON.stringify({ email, otp, password }),
     });
     const res = await req.json();
