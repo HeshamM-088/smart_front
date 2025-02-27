@@ -145,7 +145,7 @@ const SignUp = () => {
                 <MdPhotoCamera className="h-5 w-5 text-black dark:text-white hover:text-darkMainText" />
                 {showPp ? (
                   <p className="text-gray-600 font-[500] dark:text-white">
-                    {showPp}
+                    {showPp.name}
                   </p>
                 ) : (
                   <p className="text-gray-600 font-[500] dark:text-white">
@@ -156,7 +156,7 @@ const SignUp = () => {
 
               <input
                 id="pp"
-                onChange={(e) => setShowPp(e.target.files[0].name)}
+                onChange={(e) => setShowPp(e.target.files[0])}
                 name="profile_picture"
                 type="file"
                 className="rounded-[6px] relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500   focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 text-transparent"

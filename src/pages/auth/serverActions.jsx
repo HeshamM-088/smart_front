@@ -6,7 +6,7 @@ export const createNewUser = async (prevState, data) => {
   const userName = await data.get("userName");
   const email = await data.get("email");
   const password = await data.get("password");
-  let image = await data.get("profile_picture");
+  const image = await data.get("profile_picture");
 
   if (!userName || !email || !password) {
     return { data: { message: "All Fields Are Required *" } };
@@ -16,7 +16,7 @@ export const createNewUser = async (prevState, data) => {
   formData.append("userName", userName);
   formData.append("email", email);
   formData.append("password", password);
-  formData.append("file", image);
+  formData.append("userImage", image);
 
   try {
     const req = await fetch(`${URL}/register`, {
@@ -116,6 +116,47 @@ export const changePassword = async (prevState, data) => {
     });
     const res = await req.json();
 
+    return res;
+  } catch (e) {
+    return e.message;
+  }
+};
+
+export const updateUser = async (prev, { tc, user }) => {
+  const { id, role, userName, email, password, profile_image } = await user;
+  const formData = new FormData();
+  formData.append("userName", userName);
+  formData.append("email", email);
+  if (profile_image.name) {
+    formData.append("userImage", profile_image);
+  }
+
+  if (password) {
+    if (password.length < 5) {
+      return {
+        status: "pass failed",
+        message: "Error: Password Must Be At Least 5 Characters",
+      };
+    }
+    formData.append("password", password);
+  }
+
+  try {
+    const req = await fetch(`${URL}/user/${id}?role=${role}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${tc}`,
+      },
+      credentials: "include",
+      cache: "no-cache",
+      body: formData,
+    });
+
+    if (!req.ok) {
+      throw new Error(`Error: ${req.status} - ${req.statusText}`);
+    }
+
+    const res = await req.json();
     return res;
   } catch (e) {
     return e.message;

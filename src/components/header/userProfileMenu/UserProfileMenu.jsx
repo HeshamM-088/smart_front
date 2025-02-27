@@ -19,18 +19,18 @@ const UserProfileMenu = () => {
   const navigate = useNavigate();
 
   const handleLogOut = () => {
+    navigate("/");
     dispatch(logout());
     dispatch(initUserInfo());
-    navigate("/");
   };
 
   return (
     <div className="w-[10%]">
       <Menu>
-        <MenuHandler>
+        <MenuHandler className="cursor-pointer">
           <Avatar
             alt="tania andrew"
-            className="cursor-pointer md:w-[60%] md:h-[60%]  object-cover"
+            size="md"
             src={`${
               profile_image
                 ? profile_image

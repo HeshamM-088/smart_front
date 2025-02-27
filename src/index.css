@@ -12,3 +12,8 @@
   --color-darkMainText: #ff6500;
   --color-darkSecondText: #1e3e62;
 }
+
+/* input[type="file"]::file-selector-button {
+  visibility: hidden;
+  width: 0;
+} */

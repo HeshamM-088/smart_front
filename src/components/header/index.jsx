@@ -13,7 +13,7 @@ const Header = () => {
 
   return (
     <motion.div
-      className="bg-transparent h-20"
+      className="bg-transparent w-full px-[0.5em] md:px-0 shadow-lg shadow-gray-300 dark:shadow-gray-700"
       initial={{
         y: 0,
         scale: 0,
@@ -26,7 +26,7 @@ const Header = () => {
     >
       <Container
         className={
-          "h-full flex items-center md:gap-x-5 justify-between md:justify-start"
+          " flex items-center md:gap-x-5 justify-between md:justify-start"
         }
       >
         <Logo />

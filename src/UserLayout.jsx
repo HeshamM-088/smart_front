@@ -14,11 +14,11 @@ const UserLayout = () => {
   const { tc, cn } = useSelector((state) => state.auth);
 
   return (
-    <div>
+    <div className="space-y-20 md:space-y-8">
       <Header />
 
       <Routes>
-        <Route index element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<SignUp />} />
         <Route path="reset-otp" element={<ResetOtp />} />

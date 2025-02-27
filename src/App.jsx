@@ -20,7 +20,7 @@ const App = () => {
       const { id, email, userName, role, image, createdAt } = jwtDecode(tc);
       dispatch(setUserInfo({ id, email, userName, role, image, createdAt }));
     }
-  }, [cn]);
+  }, [tc, cn]);
 
   return (
     <main className="font-display bg-mainBg dark:bg-darkMainBg">
