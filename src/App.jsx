@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import Header from "./components/header";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
