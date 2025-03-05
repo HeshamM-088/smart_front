@@ -22,7 +22,7 @@ const SignUp = () => {
   }, [state]);
 
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-[2em]">
+    <div className="min-h-[calc(100vh-110px)] flex items-center justify-center px-[2em]">
       <motion.div
         initial={{ y: 0, opacity: 0, scale: 0 }}
         animate={{
@@ -171,7 +171,7 @@ const SignUp = () => {
               disabled={isPending}
               className="group dark:bg-darkMainText cursor-pointer relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-400 hover:bg-orange-600 duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              {isPending ? "Signing Up..." : " Sign up"}
+              {isPending ? "SIGNING UP..." : "SIGN UP"}
             </button>
           </div>
         </form>
@@ -182,7 +182,7 @@ const SignUp = () => {
               to={`/login`}
               className="dark:text-darkMainText dark:hover:text-[#ff9952] font-medium text-indigo-600 cursor-pointer hover:text-indigo-500"
             >
-              Log in
+              LOG IN
             </Link>
           </p>
         </div>

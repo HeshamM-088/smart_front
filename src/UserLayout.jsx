@@ -15,10 +15,7 @@ const UserLayout = () => {
   const { tc, cn } = useSelector((state) => state.auth);
 
   return (
-    <div className="space-y-20 md:space-y-8">
-      <div className="hidden md:block w-full container mx-auto">
-        <AllowCookiemsg />
-      </div>
+    <div className="space-y-30 md:space-y-10 dark:bg-darkMainBg">
       <Header />
 
       <Routes>

@@ -18,12 +18,13 @@ import { FaRegUser, FaRegEdit, FaUpload } from "react-icons/fa";
 import { FcApprove } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
+import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import { updateUser } from "../auth/serverActions";
 import { useActionState } from "react";
-import { jwtDecode } from "jwt-decode";
-import { setUserInfo } from "../../../redux/slices/auth/userInfo";
-import { setAuth } from "../../../redux/slices/auth/login";
+import { useNavigate } from "react-router-dom";
+import { logout, setAuth } from "../../../redux/slices/auth/login";
+import { initUserInfo } from "../../../redux/slices/auth/userInfo";
 
 const UserProfile = () => {
   const { email, id, userName, profile_image, role, createdAt } = useSelector(
@@ -35,6 +36,7 @@ const UserProfile = () => {
   const [showEmail, setShowEmail] = useState(true);
   const [showPassword, setShowPassword] = useState(true);
   const [originalImage, setOriginalImage] = useState(true);
+  const [deactivateBtn, setDeactivateBtn] = useState(false);
   const [open, setOpen] = useState(true);
   const dispatch = useDispatch();
 
@@ -48,6 +50,7 @@ const UserProfile = () => {
     id: "",
     role: "",
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
@@ -68,6 +71,67 @@ const UserProfile = () => {
       setOriginalImage(true);
     }
   }, [state]);
+
+  const deleteUser = async ({ userId, role, tc }) => {
+    const URL = import.meta.env.VITE_URL;
+
+    Swal.fire({
+      title: "Removing Account , Sure ?",
+      text: "You won't be able to retreive it!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      confirmButtonText: "Yes, remove it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const req = await fetch(`${URL}/user/${userId}?role=${role}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${tc}`,
+          },
+          credentials: "include",
+          cache: "no-cache",
+        });
+
+        if (!req.ok) {
+          throw new Error(`Error: ${req.status} - ${req.statusText}`);
+        }
+
+        const res = await req.json();
+
+        if (res) {
+          let timerInterval;
+          Swal.fire({
+            title: "Account Removing..",
+            html: "Just Wait <b></b> Seconds.",
+            timer: 6000,
+            timerProgressBar: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+              Swal.showLoading();
+              const timer = Swal.getPopup().querySelector("b");
+              timerInterval = setInterval(() => {
+                timer.textContent = `${Swal.getTimerLeft()}`;
+              }, 300);
+            },
+            willClose: () => {
+              clearInterval(timerInterval);
+            },
+          }).then((result) => {
+            if (result.isDismissed) {
+              dispatch(logout());
+              dispatch(initUserInfo());
+              navigate("/");
+            }
+          });
+        }
+      }
+    });
+  };
 
   return (
     <div className="flex justify-center items-center">
@@ -319,19 +383,6 @@ const UserProfile = () => {
                   {isPending ? "Updating ..." : "Confirm"}
                 </Button>
 
-                <Button
-                  size="md"
-                  type="reset"
-                  disabled={isPending}
-                  onClick={() => {
-                    window.location.reload();
-                  }}
-                  className="w-full py-2 px-0 cursor-pointer text-xl md:text-xs  flex flex-col md:flex-row justify-center items-center  transition-all duration-300 hover:bg-darkMainText gap-2"
-                >
-                  <ImCancelCircle className="text-xl font-extrabold" />
-                  Discard
-                </Button>
-
                 <Tooltip
                   className="hidden md:block"
                   content={
@@ -364,6 +415,20 @@ const UserProfile = () => {
                     Upgrade
                   </span>
                 </Tooltip>
+
+                <Button
+                  size="lg"
+                  type="reset"
+                  disabled={isPending}
+                  onClick={() => deleteUser({ userId: user.id, role, tc })}
+                  loading={deactivateBtn}
+                  className="w-full py-2 px-0 cursor-pointer text-xl md:text-xs  flex flex-col md:flex-row justify-center items-center  transition-all duration-300 hover:bg-darkMainText gap-2"
+                >
+                  {!deactivateBtn && (
+                    <ImCancelCircle className="text-xl font-extrabold" />
+                  )}
+                  {!deactivateBtn && "Deactivate"}
+                </Button>
               </motion.div>
             </CardFooter>
           </Card>

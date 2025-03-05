@@ -7,9 +7,12 @@ import { useActionState } from "react";
 import { signInLogin } from "./serverActions";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../../../redux/slices/auth/login";
+import { Button } from "@material-tailwind/react";
+import AllowCookiemsg from "../../components/AllowCookiemsg";
 
 const Login = () => {
   const [showPass, setShowPass] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   const [state, formAction, isPending] = useActionState(signInLogin, "");
 
@@ -24,7 +27,9 @@ const Login = () => {
   }, [state]);
 
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-[2em]">
+    <div className=" md:min-h-[calc(100vh-110px)] flex items-center justify-center px-[2em]">
+      <AllowCookiemsg show={showPrivacy} setShowPrivacy={showPrivacy} />
+
       <motion.div
         initial={{ y: 0, opacity: 0, scale: 0 }}
         animate={{
@@ -137,7 +142,7 @@ const Login = () => {
               to={`/signup`}
               className="font-medium text-indigo-600 dark:text-darkMainText dark:hover:text-[#ff9952] cursor-pointer hover:text-indigo-500"
             >
-              Sign up
+              SIGN UP
             </Link>
           </p>
         </div>
@@ -145,11 +150,14 @@ const Login = () => {
         <div className="text-center">
           <p className="mt-2 text-sm text-secondText dark:text-white">
             Can't Remember your password?{" "}
-            <Link to="/reset-otp">
-              <span className="font-medium text-indigo-600 cursor-pointer hover:text-indigo-500 dark:text-darkMainText dark:hover:text-[#ff9952]">
-                Forget Password
-              </span>
-            </Link>
+            <Button
+              variant="text"
+              size="sm"
+              onClick={() => setShowPrivacy(true)}
+              className="font-medium p-0 bg-transparent hover:bg-transparent text-indigo-600 cursor-pointer hover:text-indigo-500 dark:text-darkMainText dark:hover:text-[#ff9952]"
+            >
+              {`Forget Password`.toLowerCase()}
+            </Button>
           </p>
         </div>
       </motion.div>
