@@ -7,7 +7,6 @@ import { setUserInfo } from "../redux/slices/auth/userInfo";
 import UserLayout from "./UserLayout";
 import AdminLayout from "./AdminLayout";
 import Unauthorized from "./pages/Unauthorized";
-import Footer from "./components/Footer";
 
 const App = () => {
   const { cn, tc } = useSelector((state) => state.auth);
