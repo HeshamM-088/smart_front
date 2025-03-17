@@ -1,0 +1,7 @@
+  --font-display: "Urbanist", "serif";
+  --color-mainBg: #f5efff;
+  --color-mainText: #441752;
+  --color-secondText: #883747;
+  --color-darkMainBg: #10002b;
+  --color-darkMainText: #ff6500;
+  --color-darkSecondText: #1e3e62;

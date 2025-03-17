@@ -22,7 +22,7 @@ const App = () => {
   }, [tc, cn]);
 
   return (
-    <main className="font-display bg-mainBg dark:bg-darkMainBg">
+    <main className="font-body bg-mainBg dark:bg-darkMainBg">
       <Routes>
         <Route path="/*" element={<UserLayout />} />
         <Route

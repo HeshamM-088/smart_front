@@ -1,18 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap");
-@import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
-
-@theme {
-  --font-display: "Urbanist", "serif";
-  --color-mainBg: #f5efff;
-  --color-mainText: #441752;
-  --color-secondText: #883747;
-  --color-darkMainBg: #10002b;
-  --color-darkMainText: #ff6500;
-  --color-darkSecondText: #1e3e62;
-}
-
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 /* input[type="file"]::file-selector-button {
   visibility: hidden;
   width: 0;
