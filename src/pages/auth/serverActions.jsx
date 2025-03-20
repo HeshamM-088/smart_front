@@ -142,6 +142,7 @@ export const updateUser = async (prev, { tc, user }) => {
   try {
     const req = await fetch(`${URL}/user/${id}?role=${role}`, {
       method: "PATCH",
+
       headers: {
         Authorization: `Bearer ${tc}`,
       },

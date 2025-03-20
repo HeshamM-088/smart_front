@@ -22,7 +22,7 @@ const SignUp = () => {
   }, [state]);
 
   return (
-    <div className="min-h-[calc(100vh-110px)] flex items-center justify-center px-[2em]">
+    <div className="h-screen flex items-center justify-center px-[2em]">
       <motion.div
         initial={{ y: 0, opacity: 0, scale: 0 }}
         animate={{
@@ -30,9 +30,9 @@ const SignUp = () => {
           opacity: 1,
           scale: 1.1,
           transition: { duration: 0.6 },
-          boxShadow: "4px 4px 6px #dcc8ff",
+          boxShadow: "0px 0px 4px #dcc8ff",
         }}
-        className="max-w-md w-full space-y-8 p-10 bg-white dark:bg-gray-600  rounded-xl shadow-lg"
+        className="max-w-md w-full space-y-8 p-10 bg-white dark:bg-gray-800/50  rounded-xl shadow-lg"
       >
         <div className="text-center">
           {state == "Failed to fetch" && (
@@ -82,16 +82,13 @@ const SignUp = () => {
             <div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center z-50 cursor-not-allowed">
-                  <BiUser
-                    className="h-5 w-5 text-black dark:text-white"
-                    aria-hidden="true"
-                  />
+                  <BiUser className="h-5 w-5 text-black " aria-hidden="true" />
                 </div>
                 <input
                   id="userName"
                   name="userName"
                   type="text"
-                  className="dark:text-white dark:placeholder:text-white rounded-[6px] font-semibold relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900  focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="dark:text-darkMainText dark:placeholder:text-gray-600 rounded-[6px] font-semibold relative block w-full px-3 py-2 pl-10  placeholder-gray-500 text-gray-900  border border-gray-300  focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="User Name"
                 />
               </div>
@@ -101,7 +98,7 @@ const SignUp = () => {
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center z-50 cursor-not-allowed">
                   <MdAttachEmail
-                    className="h-5 w-5 text-black dark:text-white"
+                    className="h-5 w-5 text-black "
                     aria-hidden="true"
                   />
                 </div>
@@ -109,7 +106,7 @@ const SignUp = () => {
                   id="email-address"
                   name="email"
                   type="text"
-                  className="dark:text-white dark:placeholder:text-white rounded-[6px] font-semibold relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900  focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="dark:text-darkMainText dark:placeholder:text-gray-600 rounded-[6px] font-semibold relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900  focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Email address"
                 />
               </div>
@@ -122,35 +119,37 @@ const SignUp = () => {
                   className="absolute cursor-pointer inset-y-0 z-50 left-0 pl-3 flex items-center "
                 >
                   {showPass ? (
-                    <BiShow className="h-5 w-5 text-black dark:text-white" />
+                    <BiShow className="h-5 w-5 text-black " />
                   ) : (
-                    <BiHide className="h-5 w-5 text-black z-40 dark:text-white" />
+                    <BiHide className="h-5 w-5 text-black z-40 " />
                   )}
                 </div>
                 <input
                   id="password"
                   name="password"
                   type={showPass ? "text" : "password"}
-                  className="dark:text-white dark:placeholder:text-white rounded-[6px] relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 font-semibold focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="dark:text-darkMainText dark:placeholder:text-gray-600 rounded-[6px] relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 font-semibold focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Password"
                 />
               </div>
             </div>
             {/* Profile Image */}
-            <div className="relative">
+            <div className="relative flex justify-between items-center gap-6">
               <label
                 htmlFor="pp"
-                className="absolute  inset-y-0 left-0 pl-3 flex gap-x-3 items-center z-50 cursor-pointer "
+                className=" w-full border border-gray-300  focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 overflow-hidden bg-white text-gray-600 p-2 flex justify-start gap-3 items-center rounded-md cursor-pointer text-center "
               >
-                <MdPhotoCamera className="h-5 w-5 text-black dark:text-white hover:text-darkMainText" />
-                {showPp ? (
-                  <p className="text-gray-600 font-[500] dark:text-white">
-                    {showPp.name}
-                  </p>
-                ) : (
-                  <p className="text-gray-600 font-[500] dark:text-white">
-                    Upload Your Photo
-                  </p>
+                <MdPhotoCamera className="h-5 w-5 text-black hover:text-darkMainText" />
+
+                <span className="text-gray-900/55 dark:placeholder:text-gray-600/55  font-medium">
+                  {showPp ? showPp.name : "Upload Your Photo"}
+                </span>
+                {showPp && (
+                  <img
+                    src="/signupimage.gif"
+                    width="8%"
+                    className="rounded-lg"
+                  />
                 )}
               </label>
 
@@ -159,7 +158,7 @@ const SignUp = () => {
                 onChange={(e) => setShowPp(e.target.files[0])}
                 name="profile_picture"
                 type="file"
-                className="rounded-[6px] relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500   focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 text-transparent"
+                className="hidden"
                 placeholder="Profile Picture"
               />
             </div>

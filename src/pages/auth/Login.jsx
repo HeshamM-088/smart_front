@@ -37,9 +37,9 @@ const Login = () => {
           opacity: 1,
           scale: 1.1,
           transition: { duration: 0.6 },
-          boxShadow: "4px 4px 6px #dcc8ff",
+          boxShadow: "0px 0px 4px #dcc8ff",
         }}
-        className="max-w-md w-full space-y-8 p-10 bg-white dark:bg-gray-600 rounded-xl shadow-lg"
+        className="max-w-md w-full space-y-8 p-10 bg-white/50 dark:bg-gray-800/50 rounded-xl shadow-lg"
       >
         <div className="text-center">
           {state == "Failed to fetch" && (
@@ -85,7 +85,7 @@ const Login = () => {
           </p>
         </div>
         <form className="mt-8 space-y-6" action={formAction}>
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="rounded-md shadow-sm space-y-3">
             <div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center z-50 cursor-not-allowed">
@@ -98,7 +98,7 @@ const Login = () => {
                   id="email-address"
                   name="email"
                   type="text"
-                  className=" rounded-none dark:text-white dark:placeholder:text-white font-semibold relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className=" rounded-none dark:text-darkMainText dark:placeholder:text-gray-600 font-semibold relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Email address"
                 />
               </div>
@@ -119,7 +119,7 @@ const Login = () => {
                   id="password"
                   name="password"
                   type={showPass ? "text" : "password"}
-                  className=" rounded-none dark:text-white dark:placeholder:text-white relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 font-semibold rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className=" rounded-none dark:text-darkMainText dark:placeholder:text-gray-600 relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 font-semibold rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Password"
                 />
               </div>

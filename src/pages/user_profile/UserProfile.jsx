@@ -409,10 +409,10 @@ const UserProfile = () => {
                 >
                   <span
                     disabled={role == "SysOp"}
-                    className="w-full bg-slate-900 text-white text-xl md:text-xs rounded-lg font-bold py-2 px-0 cursor-pointer flex flex-col md:flex-row justify-center items-center  transition-all duration-300 hover:bg-darkMainText gap-2"
+                    className="w-full bg-gray-900 text-white text-xl md:text-xs rounded-lg font-bold py-2 px-0 cursor-pointer flex flex-col md:flex-row justify-center items-center  transition-all duration-300 hover:bg-darkMainText gap-2"
                   >
                     <GoShieldLock className="text-xl font-extrabold" />
-                    Upgrade
+                    UPGRADE
                   </span>
                 </Tooltip>
 

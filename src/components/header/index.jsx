@@ -31,12 +31,12 @@ const Header = () => {
       >
         <Logo />
         {/* search bar */}
-        <div className="w-full hidden group md:flex items-center gap-x-1 border-[1px] border-lightText/50 dark:border-gray-600 rounded-full px-4 py-1.5 focus-within:border-orange-600">
+        <div className="w-full hidden group md:flex items-center gap-x-1 border-[1px] border-gray-600/50 dark:border-gray-600 rounded-full px-4 py-1.5 focus-within:border-orange-600">
           <CiSearch className="text-gray-400 dark:text-darkSecondText group-focus-within:text-gray-800 dark:group-focus-within:text-darkMainText" />
           <input
             type="text"
             placeholder="Search for products"
-            className="placeholder:text-sm placeholder:text-lightText/40 dark:placeholder:text-darkMainText hover:placeholder:text-lightText/100 hover:cursor-pointer flex-1 outline-none bg-transparent  rounded-3xl px-2"
+            className="placeholder:text-sm placeholder:text-gray-400 dark:placeholder:text-darkMainText hover:placeholder:text-lightText/100 hover:cursor-pointer flex-1 outline-none bg-transparent  rounded-3xl px-2"
           />
         </div>
         {/* authintication inputs */}
