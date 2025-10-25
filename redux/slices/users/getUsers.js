@@ -31,6 +31,7 @@ export const getAllUsers = createAsyncThunk(
 
 const initialState = {
   usersLoading: true,
+  userChangedFlag: false,
   allUsers: [],
   usersError: null,
 };
@@ -38,6 +39,11 @@ const initialState = {
 const getUsers = createSlice({
   name: "get_users",
   initialState,
+  reducers: {
+    updateUsers: (state, action) => {
+      state.userChangedFlag = !state.userChangedFlag;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getAllUsers.pending, (state) => {
       state.usersLoading = true;
@@ -48,7 +54,6 @@ const getUsers = createSlice({
     });
     builder.addCase(getAllUsers.rejected, (state, action) => {
       state.usersLoading = false;
-      console.log(action.payload);
 
       state.usersError = action.payload.data;
     });
@@ -56,3 +61,4 @@ const getUsers = createSlice({
 });
 
 export const users = getUsers.reducer;
+export const { updateUsers } = getUsers.actions;

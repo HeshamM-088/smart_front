@@ -15,12 +15,19 @@ import {
   Tooltip,
 } from "@material-tailwind/react";
 import { TABLE_HEAD } from "../../../utilitis/Admin-Users.js";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import Swal from "sweetalert2";
+import { approveSellerRequest } from "../server_requests/serverActions.jsx";
+import { updateUsers } from "../../../redux/slices/users/getUsers.js";
 
 const Users = () => {
   const { usersLoading, allUsers } = useSelector((state) => state.users);
+  const { id, role } = useSelector((state) => state.userProfile);
+  const { tc } = useSelector((state) => state.auth);
   const [searchQuery, setSearchQuery] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const dispatch = useDispatch();
 
   const filteredUsers = allUsers?.filter(({ userName }) =>
     [userName].some((field) =>
@@ -30,6 +37,129 @@ const Users = () => {
 
   const handleMakeAdmin = (email) => {
     console.log(email);
+  };
+
+  const approveSellerRole = async ({ userId, role }) => {
+    setErrorMsg("");
+
+    const swal_result = await Swal.fire({
+      title: "Upgrade Account ?",
+      text: "User Will Be A Seller In Your WebSite With All Authorization For Seller Man 😊",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      confirmButtonText: "Yes, Upgrade Now ✅",
+    });
+
+    if (!swal_result.isConfirmed) {
+      return;
+    }
+
+    const action_result = await approveSellerRequest({
+      userId,
+      role,
+      tc,
+      msg: "Upgrade",
+    });
+
+    if (
+      action_result?.status == "Error" ||
+      action_result.message == "Failed to fetch"
+    ) {
+      return setErrorMsg(
+        action_result?.data?.message
+          ? action_result?.data?.message
+          : action_result.message
+      );
+    }
+
+    let timerInterval;
+    Swal.fire({
+      title: "Account Upgrading..",
+      html: "Just Wait <b></b> Seconds.",
+      timer: 6000,
+      timerProgressBar: true,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading();
+        const timer = Swal.getPopup().querySelector("b");
+        timerInterval = setInterval(() => {
+          timer.textContent = `${Swal.getTimerLeft()}`;
+        }, 300);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      if (result.isDismissed) {
+        dispatch(updateUsers());
+      }
+    });
+  };
+
+  const removeSellerRole = async ({ userId, role }) => {
+    setErrorMsg("");
+    const swal_result = await Swal.fire({
+      title: "Downgrade Account ?",
+      text: "User Will Not Be A Seller In Your WebSite , All Authorization Will Be Removed From His Account 😊",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      confirmButtonText: "Yes, Downgrade Now ✅",
+    });
+
+    if (!swal_result.isConfirmed) {
+      return;
+    }
+
+    const action_result = await approveSellerRequest({
+      userId,
+      role,
+      tc,
+      msg: "Downgrade",
+    });
+
+    if (
+      action_result?.status == "Error" ||
+      action_result.message == "Failed to fetch"
+    ) {
+      return setErrorMsg(
+        action_result?.data?.message
+          ? action_result?.data?.message
+          : action_result.message
+      );
+    }
+
+    let timerInterval;
+    Swal.fire({
+      title: "Account Downgrading..",
+      html: "Just Wait <b></b> Seconds.",
+      timer: 6000,
+      timerProgressBar: true,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading();
+        const timer = Swal.getPopup().querySelector("b");
+        timerInterval = setInterval(() => {
+          timer.textContent = `${Swal.getTimerLeft()}`;
+        }, 300);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      if (result.isDismissed) {
+        dispatch(updateUsers());
+      }
+    });
   };
 
   return (
@@ -52,6 +182,12 @@ const Users = () => {
               {filteredUsers?.length} Users Found
             </span>
           </div>
+
+          {errorMsg && (
+            <h1 className="text-red-400  text-center bg-black p-2 rounded-lg font-bold">
+              {errorMsg.toUpperCase()}
+            </h1>
+          )}
 
           <div className="w-full md:w-fit px-[2em]">
             <Input
@@ -92,7 +228,19 @@ const Users = () => {
           </thead>
           <tbody>
             {filteredUsers?.map(
-              ({ image, userName, email, role, createdAt }, index) => {
+              (
+                {
+                  _id,
+                  image,
+                  userName,
+                  email,
+                  role,
+                  createdAt,
+                  isApproved,
+                  sellerApprovalRequest: { request, comment },
+                },
+                index
+              ) => {
                 const isLast = index === filteredUsers?.length - 1;
                 const classes = isLast
                   ? "p-4"
@@ -165,7 +313,31 @@ const Users = () => {
                           </Button>
                         </div>
                       ) : (
-                        <p className="text-center">--</p>
+                        <p className="text-center">
+                          {!isApproved && request ? (
+                            <Button
+                              color="deep-orange"
+                              size="sm"
+                              onClick={() =>
+                                approveSellerRole({ userId: _id, role })
+                              }
+                            >
+                              Approve Seller Request
+                            </Button>
+                          ) : role == "Vendor" ? (
+                            <Button
+                              color="red"
+                              size="sm"
+                              onClick={() =>
+                                removeSellerRole({ userId: _id, role })
+                              }
+                            >
+                              Remove Seller Rights
+                            </Button>
+                          ) : (
+                            "--"
+                          )}
+                        </p>
                       )}
                     </td>
                   </tr>

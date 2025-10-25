@@ -8,18 +8,40 @@ import UserLayout from "./UserLayout";
 import AdminLayout from "./AdminLayout";
 import Unauthorized from "./pages/Unauthorized";
 import Footer from "./components/Footer";
+import SellerLayout from "./SellerLayout";
 
 const App = () => {
   const { cn, tc } = useSelector((state) => state.auth);
-  const { role } = useSelector((state) => state.userProfile);
+  const { role, userChanged } = useSelector((state) => state.userProfile);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (tc) {
-      const { id, email, userName, role, image, createdAt } = jwtDecode(tc);
-      dispatch(setUserInfo({ id, email, userName, role, image, createdAt }));
+      const {
+        id,
+        email,
+        userName,
+        role,
+        image,
+        createdAt,
+        isApproved,
+        sellerApprovalRequest: { request, comment },
+      } = jwtDecode(tc);
+      dispatch(
+        setUserInfo({
+          id,
+          email,
+          userName,
+          role,
+          image,
+          createdAt,
+          isApproved,
+          request,
+          comment,
+        })
+      );
     }
-  }, [tc, cn]);
+  }, [tc, cn, userChanged]);
 
   return (
     <main className="font-body bg-mainBg dark:bg-darkMainBg">
@@ -34,6 +56,20 @@ const App = () => {
               <Unauthorized
                 role="USER"
                 message="You Are Not Allowed To View This Page, Only Admins Can View !"
+              />
+            )
+          }
+        />
+
+        <Route
+          path="/vendor/*"
+          element={
+            role == import.meta.env.VITE_SELLER ? (
+              <SellerLayout />
+            ) : (
+              <Unauthorized
+                role="Vendor"
+                message="You Are Not Allowed To View This Page, Only Vendors Can View !"
               />
             )
           }

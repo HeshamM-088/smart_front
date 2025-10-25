@@ -13,12 +13,12 @@ import Unauthorized from "./pages/Unauthorized";
 const AdminLayout = () => {
   const { tc } = useSelector((state) => state.auth);
   const { role } = useSelector((state) => state.userProfile);
-  const { usersError } = useSelector((state) => state.users);
+  const { usersError, userChangedFlag } = useSelector((state) => state.users);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getAllUsers({ tc, role }));
-  }, []);
+  }, [userChangedFlag]);
 
   const listOfCategories = [
     {

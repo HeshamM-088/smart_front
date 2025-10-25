@@ -10,6 +10,7 @@ import {
   Alert,
 } from "@material-tailwind/react";
 import { GoShieldLock } from "react-icons/go";
+import { ToastContainer, toast } from "react-toastify";
 import { IoIosMailUnread } from "react-icons/io";
 import { TbLockPassword } from "react-icons/tb";
 import { GiConfirmed } from "react-icons/gi";
@@ -24,12 +25,20 @@ import { updateUser } from "../auth/serverActions";
 import { useActionState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout, setAuth } from "../../../redux/slices/auth/login";
-import { initUserInfo } from "../../../redux/slices/auth/userInfo";
+import { initUserInfo, userChanged } from "../../../redux/slices/auth/userInfo";
 
 const UserProfile = () => {
-  const { email, id, userName, profile_image, role, createdAt } = useSelector(
-    (state) => state.userProfile
-  );
+  const {
+    email,
+    id,
+    userName,
+    profile_image,
+    role,
+    createdAt,
+    isApproved,
+    sellerApprovalRequest: { request, comment },
+  } = useSelector((state) => state.userProfile);
+
   const { cn, tc } = useSelector((state) => state.auth);
 
   const [showUser, setShowUser] = useState(true);
@@ -37,6 +46,7 @@ const UserProfile = () => {
   const [showPassword, setShowPassword] = useState(true);
   const [originalImage, setOriginalImage] = useState(true);
   const [deactivateBtn, setDeactivateBtn] = useState(false);
+
   const [open, setOpen] = useState(true);
   const dispatch = useDispatch();
 
@@ -133,8 +143,84 @@ const UserProfile = () => {
     });
   };
 
+  const handleUpgradeToSeller = async ({ userId, role, tc }) => {
+    if (role == "Vendor") {
+      return toast.error(
+        <div className=" text-red-500 font-bold rounded-2xl p-2">
+          <h1 style={{ margin: 0 }}>Action Failed 😕</h1>
+          <p>User Already A Seller Man</p>
+        </div>
+      );
+    }
+
+    const URL = import.meta.env.VITE_URL;
+
+    const res = await Swal.fire({
+      title: "Upgrading Account , Sure ?",
+      text: "If Yes, You Will Have To Wait Admin Approval Within 14 Days 😊",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      confirmButtonText: "Yes, Upgrade To Seller",
+    });
+
+    if (res.isConfirmed) {
+      try {
+        const req = await fetch(`${URL}/user/${userId}?role=${role}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tc}`,
+          },
+          body: JSON.stringify({
+            sellerApprovalRequest: {
+              comment: "Your Seller Request Is Under Reviewing, Please Wait",
+              request: true,
+            },
+          }),
+
+          credentials: "include",
+        });
+
+        if (!req.ok) {
+          throw new Error(`Error: ${req.status} - ${req.statusText}`);
+        }
+        const res = await req.json();
+
+        dispatch(userChanged());
+
+        let timerInterval;
+        Swal.fire({
+          title: "Requesting Upgrade",
+          html: "Just Wait Admin Approval {<b></b>}",
+          timer: 6000,
+          timerProgressBar: true,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          didOpen: () => {
+            Swal.showLoading();
+            const timer = Swal.getPopup().querySelector("b");
+            timerInterval = setInterval(() => {
+              timer.textContent = `${Swal.getTimerLeft()}`;
+            }, 300);
+          },
+          willClose: () => {
+            clearInterval(timerInterval);
+          },
+        }).then(() => {
+          navigate(-1);
+        });
+      } catch (er) {
+        console.log(er.message);
+      }
+    }
+  };
+
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center pt-[4em] lg:pt-4">
       <div className="min-h-screen  md:w-[50%] rounded-2xl  dark:bg-transparent  p-4 flex items-center justify-center">
         <form
           action={() => formAction({ user, tc })}
@@ -194,6 +280,7 @@ const UserProfile = () => {
                     </div>
                   </Tooltip>
                 </div>
+
                 <div className="text-center space-y-1">
                   <h2 className="text-2xl font-bold">
                     {userName?.toUpperCase()}
@@ -204,6 +291,8 @@ const UserProfile = () => {
                 </div>
               </CardHeader>
             </motion.div>
+
+            <ToastContainer autoClose={4000} position="top-left" stacked />
 
             {state?.status == "Success" && (
               <div className="mx-2">
@@ -219,6 +308,12 @@ const UserProfile = () => {
               </div>
             )}
 
+            <div className="w-full flex justify-center items-center">
+              <h1 className="text-darkMainText font-bold dark:font-medium">
+                {comment}
+              </h1>
+            </div>
+
             <CardBody className="space-y-4">
               <motion.div
                 initial={{ opacity: 0.01 }}
@@ -233,9 +328,9 @@ const UserProfile = () => {
                   htmlFor="username"
                   variant="small"
                   color="blue-gray"
-                  className="mb-1 font-medium  items-center gap-2 hidden md:flex"
+                  className="mb-1 font-medium  items-center gap-2 hidden md:flex dark:text-gray-400"
                 >
-                  <FaRegUser className="w-4 h-4" />
+                  <FaRegUser className="w-4 h-4 dark:text-gray-400" />
                   Username
                 </Typography>
                 <FaRegUser className="w-4 h-4 block md:hidden" />
@@ -272,10 +367,10 @@ const UserProfile = () => {
                   htmlFor="email"
                   variant="small"
                   color="blue-gray"
-                  className="mb-1 font-medium  items-center gap-2 hidden md:flex"
+                  className="mb-1 font-medium  items-center gap-2 dark:text-gray-400 hidden md:flex"
                   as="label"
                 >
-                  <IoIosMailUnread className="w-4 h-4" />
+                  <IoIosMailUnread className="w-4 h-4 dark:text-gray-400" />
                   Email
                 </Typography>
                 <IoIosMailUnread className="w-4 h-4 block md:hidden" />
@@ -312,10 +407,10 @@ const UserProfile = () => {
                   htmlFor="password"
                   variant="small"
                   color="blue-gray"
-                  className="mb-1  font-medium hidden md:flex items-center gap-2"
+                  className="mb-1  font-medium hidden md:flex items-center gap-2 dark:text-gray-400"
                   as="label"
                 >
-                  <TbLockPassword className="w-4 h-4" />
+                  <TbLockPassword className="w-4 h-4 dark:text-gray-400" />
                   Password
                 </Typography>
                 <TbLockPassword className="w-4 h-4 block md:hidden" />
@@ -357,78 +452,101 @@ const UserProfile = () => {
                   opacity: 1,
                   transition: { duration: 0.8 },
                 }}
-                className="w-full flex justify-center flex-col md:flex-row items-center gap-4"
+                className="w-full flex flex-col justify-center items-center gap-4"
               >
-                <div className="md:hidden block w-full  space-y-4 text-center text-wrap">
-                  <Typography color="blue" className="font-medium text-[100%]">
-                    Upgrade To Seller
-                  </Typography>
-                  <Typography
-                    variant="small"
-                    color="yellow"
-                    className="font-bold "
+                {role == "EndUser" && request && (
+                  <div className="w-full flex justify-center">
+                    <span className=" font-extrabold text-white">
+                      Waiting For Admin Approval ⏳
+                    </span>
+                  </div>
+                )}
+
+                <div className="w-full flex justify-center flex-col md:flex-row items-center gap-4">
+                  <div className="md:hidden block w-full  space-y-4 text-center text-wrap">
+                    <Typography
+                      color="blue"
+                      className="font-medium text-[100%]"
+                    >
+                      Upgrade To Seller
+                    </Typography>
+                    <Typography
+                      variant="small"
+                      color="yellow"
+                      className="font-bold "
+                    >
+                      When You Confirm Upgrade To Seller , You Will Wait For
+                      Admin Confirmation Then You Can Manage Your New Seller
+                      Account
+                    </Typography>
+                  </div>
+
+                  <Button
+                    size="md"
+                    type="submit"
+                    onClick={() => setOpen(true)}
+                    className="w-full py-2 px-0 cursor-pointer text-xl md:text-xs  flex flex-col md:flex-row justify-center items-center  transition-all duration-300 hover:bg-darkMainText gap-2"
                   >
-                    When You Confirm Upgrade To Seller , You Will Wait For Admin
-                    Confirmation Then You Can Manage Your New Seller Account
-                  </Typography>
-                </div>
+                    <GiConfirmed className="text-xl font-extrabold" />
+                    {isPending ? "Updating ..." : "Confirm"}
+                  </Button>
 
-                <Button
-                  size="md"
-                  type="submit"
-                  onClick={() => setOpen(true)}
-                  className="w-full py-2 px-0 cursor-pointer text-xl md:text-xs  flex flex-col md:flex-row justify-center items-center  transition-all duration-300 hover:bg-darkMainText gap-2"
-                >
-                  <GiConfirmed className="text-xl font-extrabold" />
-                  {isPending ? "Updating ..." : "Confirm"}
-                </Button>
-
-                <Tooltip
-                  className="hidden md:block"
-                  content={
-                    <div className="w-80">
-                      <Typography color="blue" className="font-medium">
-                        Upgrade To Seller
-                      </Typography>
-                      <Typography
-                        variant="small"
-                        color="yellow"
-                        className="font-bold "
+                  {role !== "EndUser" ||
+                    (!request && (
+                      <Tooltip
+                        className="hidden md:block"
+                        content={
+                          <div className="w-80">
+                            <Typography color="blue" className="font-medium">
+                              Upgrade To Seller
+                            </Typography>
+                            <Typography
+                              variant="small"
+                              color="yellow"
+                              className="font-bold "
+                            >
+                              When You Confirm Upgrade To Seller , You Will Wait
+                              For Admin Confirmation Then You Can Manage Your
+                              New Seller Account
+                            </Typography>
+                          </div>
+                        }
+                        placement="top"
+                        animate={{
+                          mount: {
+                            scale: 1,
+                            y: 0,
+                            transition: { duration: 0.5 },
+                          },
+                          unmount: { scale: 0, y: 0 },
+                        }}
                       >
-                        When You Confirm Upgrade To Seller , You Will Wait For
-                        Admin Confirmation Then You Can Manage Your New Seller
-                        Account
-                      </Typography>
-                    </div>
-                  }
-                  placement="top"
-                  animate={{
-                    mount: { scale: 1, y: 0, transition: { duration: 0.5 } },
-                    unmount: { scale: 0, y: 0 },
-                  }}
-                >
-                  <span
-                    disabled={role == "SysOp"}
-                    className="w-full bg-gray-900 text-white text-xl md:text-xs rounded-lg font-bold py-2 px-0 cursor-pointer flex flex-col md:flex-row justify-center items-center  transition-all duration-300 hover:bg-darkMainText gap-2"
-                  >
-                    <GoShieldLock className="text-xl font-extrabold" />
-                    UPGRADE
-                  </span>
-                </Tooltip>
+                        <Button
+                          onClick={() =>
+                            handleUpgradeToSeller({ userId: user.id, role, tc })
+                          }
+                          className="w-full bg-gray-900 text-white text-xl md:text-xs rounded-lg font-bold py-2 px-0 cursor-pointer flex flex-col md:flex-row justify-center items-center  transition-all duration-300 hover:bg-darkMainText gap-2"
+                        >
+                          <GoShieldLock className="text-xl font-extrabold" />
+                          UPGRADE
+                        </Button>
+                      </Tooltip>
+                    ))}
 
-                <Button
-                  size="lg"
-                  type="reset"
-                  disabled={isPending}
-                  onClick={() => deleteUser({ userId: user.id, role, tc })}
-                  loading={deactivateBtn}
-                  className="w-full py-2 px-0 cursor-pointer text-xl md:text-xs  flex flex-col md:flex-row justify-center items-center  transition-all duration-300 hover:bg-darkMainText gap-2"
-                >
-                  {!deactivateBtn && (
-                    <ImCancelCircle className="text-xl font-extrabold" />
-                  )}
-                  {!deactivateBtn && "Deactivate"}
-                </Button>
+                  <Button
+                    size="lg"
+                    type="reset"
+                    disabled={isPending}
+                    onClick={() => deleteUser({ userId: user.id, role, tc })}
+                    loading={deactivateBtn}
+                    className="w-full py-2 px-0 cursor-pointer text-xl md:text-xs  flex flex-col md:flex-row justify-center items-center  transition-all duration-300 hover:bg-darkMainText gap-2"
+                  >
+                    {!deactivateBtn && (
+                      <ImCancelCircle className="text-xl font-extrabold" />
+                    )}
+                    {!deactivateBtn && "Deactivate"}
+                  </Button>
+                </div>
               </motion.div>
             </CardFooter>
           </Card>

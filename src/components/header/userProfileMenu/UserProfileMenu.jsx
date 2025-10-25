@@ -63,6 +63,19 @@ const UserProfileMenu = () => {
             </MenuItem>
           )}
 
+          {role == import.meta.env.VITE_SELLER && (
+            <MenuItem className="flex flex-col items-center gap-2 hover:bg-gray-200">
+              <Typography
+                as={Link}
+                to="/vendor"
+                variant="small"
+                className="font-bold"
+              >
+                Control Panel
+              </Typography>
+            </MenuItem>
+          )}
+
           <hr className="my-2 border-blue-gray-50" />
           <MenuItem
             className="flex items-center gap-2 hover:bg-gray-200"
